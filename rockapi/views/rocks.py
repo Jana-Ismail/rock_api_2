@@ -3,6 +3,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from rockapi.models import Rock, Type
+from django.contrib.auth.models import User
 
 class RockView(ViewSet):
     """Rock view set"""
@@ -38,10 +39,18 @@ class RockTypeSerializer(serializers.ModelSerializer):
         model = Type
         fields = ( 'label', )
 
+class RockOwnerSerializer(serializers.ModelSerializer):
+    """JSON serializer"""
+
+    class Meta:
+        model = User
+        fields = ( 'first_name', 'last_name', )
+
 class RockSerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
     type = RockTypeSerializer(many=False)
+    user = RockOwnerSerializer(many=False)
 
     class Meta:
         model = Rock
