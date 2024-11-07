@@ -14,9 +14,21 @@ class RockView(ViewSet):
         Returns:
             Response -- JSON serialized instance of a Rock object
         """
-
-        # You will implement this feature in a future chapter
-        return Response("", status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+        rock = Rock()
+        
+        rock.user = request.auth.user
+        rock.type_id = request.data["typeId"]
+        rock.weight = request.data["weight"]
+        rock.name = request.data["name"]
+        
+        try:
+            rock.save()
+            # serializer = RockSerializer(rock, many=False)
+            return Response(None, status=status.HTTP_201_CREATED)
+            # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as ex:
+            return Response({"reason": ex.args[0]}, status=status.HTTP_400_BAD_REQUEST)
     
     def list(self, request):
         """Handle GET requests for all rock instances
