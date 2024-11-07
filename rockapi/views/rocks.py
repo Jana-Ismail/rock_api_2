@@ -2,7 +2,7 @@ from django.http import HttpResponseServerError
 from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
-from rockapi.models import Rock
+from rockapi.models import Rock, Type
 
 class RockView(ViewSet):
     """Rock view set"""
@@ -31,9 +31,18 @@ class RockView(ViewSet):
         except Exception as ex:
             return HttpResponseServerError(ex)
 
-class RockSerializer(serializers.ModelSerializer):
+class RockTypeSerializer(serializers.ModelSerializer):
     """JSON serializer"""
 
     class Meta:
+        model = Type
+        fields = ( 'label', )
+
+class RockSerializer(serializers.ModelSerializer):
+    """JSON serializer"""
+
+    type = RockTypeSerializer(many=False)
+
+    class Meta:
         model = Rock
-        fields = ( 'id', 'name', 'weight', )
+        fields = ( 'id', 'name', 'weight', 'user', 'type', )
